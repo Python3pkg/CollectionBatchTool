@@ -15,3 +15,23 @@ specialists, and system administrators.
 Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
 
 Currently only with support for Python 3.
+
+
+Installation
+------------
+
+For most users, the easiest way is probably to install the latest version 
+hosted on `PyPI <https://pypi.python.org/>`_:
+
+.. code-block:: console
+
+    $ pip install collectionbatchtool
+
+The project is hosted at https://github.com/jmenglund/CollectionBatchTool and 
+can also be installed using git:
+
+.. code-block:: console
+
+    $ git clone https://github.com/jmenglund/CollectionBatchTool.git
+    $ cd CollectionBatchTool
+    $ python setup.py install
