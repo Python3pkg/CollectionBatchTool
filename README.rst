@@ -13,3 +13,5 @@ specialists, and system administrators.
 * Requires no prior knowledge in SQL and minimal knowledge in Python
 
 Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
+
+Currently only with support for Python 3.
