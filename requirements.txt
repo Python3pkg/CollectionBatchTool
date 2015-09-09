@@ -1,4 +1,3 @@
-configparser
 pandas>=0.16
 peewee>=2.6
 pymysql
