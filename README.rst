@@ -12,14 +12,14 @@ specialists, and system administrators.
 * Fast uploading of large datasets
 * Requires no prior knowledge in SQL and minimal knowledge in Python
 
-.. image:: https://api.travis-ci.org/jmenglund/CollectionBatchTool.svg?branch=master
-  :target: https://travis-ci.org/jmenglund/CollectionBatchTool
-
 Currently only with support for Python 3.
 
 Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
 
 Documentation at `<http://collectionbatchtool.readthedocs.org/>`_
+
+.. image:: https://api.travis-ci.org/jmenglund/CollectionBatchTool.svg?branch=master
+  :target: https://travis-ci.org/jmenglund/CollectionBatchTool
 
 
 Installation
