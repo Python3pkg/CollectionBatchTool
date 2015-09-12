@@ -3,7 +3,7 @@ CollectionBatchTool
 
 CollectionBatchTool is a Python library for importing, exporting, and updating 
 batches of collection data in `Specify <http://specifyx.specifysoftware.org>`_. 
-The intended audience is advance users such as data managers, migration 
+The intended audience is advanced users such as data managers, migration 
 specialists, and system administrators.
 
 * Built on top of the packages
