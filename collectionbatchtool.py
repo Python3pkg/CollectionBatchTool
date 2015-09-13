@@ -408,6 +408,28 @@ class TableDataset(object):
                  self.frame.shape[1]))
         return description
 
+    def _get_next_insert_id(self):
+        """Get next autoincrement value."""
+        database = self.specify_context['database']
+        table_name = self.model._meta.name
+        database.connect()
+        sql_query = (
+            "SELECT auto_increment FROM information_schema.tables "
+            "WHERE table_name = '{0}' AND table_schema = '{1}';"
+            .format(table_name, database.database))
+        return database.execute_sql(sql_query).fetchone()[0]
+        database.close()
+
+    def _get_update_query(self, record):
+        """Return a peewee :class:`SelectQuery` for updating a record."""
+        primary_key_field = getattr(self.model, self.primary_key_column)
+        primary_key_value = record[self.primary_key_column]
+        del record[self.primary_key_column]
+        update_query = (
+            self.model.update(**record)
+            .where(primary_key_field == primary_key_value))
+        return update_query
+
     def describe_columns(self):
         """
         Return a :class:`pandas.DataFrame` describing the columns
@@ -447,28 +469,6 @@ class TableDataset(object):
             'database_column', 'file_column', 'sourceid_column',
             'static_content']
         return frame[columns]
-
-    def _get_next_insert_id(self):
-        """Get next autoincrement value."""
-        database = self.specify_context['database']
-        table_name = self.model._meta.name
-        database.connect()
-        sql_query = (
-            "SELECT auto_increment FROM information_schema.tables "
-            "WHERE table_name = '{0}' AND table_schema = '{1}';"
-            .format(table_name, database.database))
-        return database.execute_sql(sql_query).fetchone()[0]
-        database.close()
-
-    def _get_update_query(self, record):
-        """Return a peewee :class:`SelectQuery` for updating a record."""
-        primary_key_field = getattr(self.model, self.primary_key_column)
-        primary_key_value = record[self.primary_key_column]
-        del record[self.primary_key_column]
-        update_query = (
-            self.model.update(**record)
-            .where(primary_key_field == primary_key_value))
-        return update_query
 
     def from_csv(self, filepath, quiet=True, **kwargs):
         """Read dataset from a CSV file.
