@@ -6,12 +6,3 @@ python:
  - '3.4'
 
 script: echo foo
-
-deploy:
-  provider: pypi
-  user: jmenglund
-  password:
-    secure: qb9XlL4fG0eSRVNYRMuigG7clCgXwcWQg2xft45aRHUTrwc/fdhccIWop+wxv0kZCJ956t7zugLwjM3NErAQgUeqF/OeQ1aH+zaPFb8XsljvhrTwMIz/lkP2JZzXqppaYLTk8bix9Lf02rfI+cde0Sv1ZfOqqpEeLUrxvY1JHbUibtGkjn6NJs41bDu/W4U7n3kp5r6TAoOoYQz8XG87Hcsv3dwrb9zFuWFaorOuE70RBf+slYzDMLp27PnyCrwb9dHyMqMaoBR9mEAezvyDhTq6zgwwZQ/vTRjiL675ZI0cJq8CUVsWvxmlUot1CGCtUQqhv0OanJ7dVrcziaEuFDnOZzP5cBCJrQ3y97WsxmdygPio0sQnQzyI0FoIX9dSi8RscGnf4ZTuYsJhALEkSN14OkIKHsI2NjhZE2/aElto92aRGOCYm/6YN/ByZaDuzBx1k/QxLdeEvHuUtXDY4j+NW+2hsFEQOicthEUZbKJ/9GTh/5A2M0/dQo3n0pDCa0I9QKc70wdrbFWTEvABB8yyMu5PKt7NyoBeRxpq/O3j0orS5k9qWdR212m5QxrQXFGs42cCvyntp6AMDszcrJHWxbk99fEIrvOQU8JQ8c6N/hZNwEIi2ka2ihGI0SycsESpoD08ZJvvGnZOY6cGQX1FQxmRXznbLJ0PBl340oQ=
-  on:
-    tags: true
-    repo: jmenglund/CollectionBatchTool
