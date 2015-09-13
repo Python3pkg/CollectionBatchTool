@@ -107,7 +107,7 @@ the output):
     where_clause: <class 'peewee.Expression'>
     frame: <class 'pandas.core.frame.DataFrame'> [0 rows x 30 columns]
 
-You can also look at the :attr:`~TableDataset.frame` attribute directly:
+You can also take a look at the :attr:`~TableDataset.frame` attribute directly:
 
 .. code-block:: pycon
 
@@ -237,8 +237,8 @@ object, you should see a new value in the *agentid*-column for every record
 that was imported to the database.
 
 Now, let's try to upload the dataset again. As you should notice, none of the 
-records gets inserted into the database this time. The reason is the new 
-values in the *agentid*-column. Only records where the primary key is missing 
+records were inserted into the database this time. The reason is the new 
+values in the *agentid*-column. Only records that lack a primary key value 
 will get uploaded to the database.
 
 Finally, we can use the :meth:`~TableDataset.write_mapping_to_csv` method 
@@ -260,7 +260,7 @@ Updating existing database records
 ----------------------------------
 
 In the last exercise of the quickstart guide, we will try to update some of 
-the records that we imported in the :ref:`previously <importing-table-data>`. 
+the records that we imported :ref:`previously <importing-table-data>`. 
 Suppose that we want to update the agent-table with new birthyears for three of 
 the apostles that were imported.
 
@@ -284,8 +284,8 @@ sample data into that object:
         3 rows x 4 columns; apostles_birthyear.csv
 
 Next, we get primary key values from the agent-table based on content in the 
-columns *firstname* and *lastname* (we assume here that the combination of first
-and last names will uniquely identify individual agent records). We use the 
+columns *firstname* and *lastname* (we assume that the combination of first
+and last names will uniquely identify individual agent-records). We use the 
 :meth:`~TableDataset.match_database_records` method:
 
 .. code-block:: pycon
@@ -300,7 +300,7 @@ You should now be able to see the updated values in the *agentid*-column
 if you check the :attr:`~TableDataset.frame` attribute of your
 :class:`AgentDataset` object. 
 Once the primary key values are in place, it's easy to update the database 
-with information from the two new columns with the 
+with information from the two new columns by using the 
 :meth:`~TableDataset.update_database_records` method:
 
 .. code-block:: pycon
@@ -309,7 +309,7 @@ with information from the two new columns with the
     [AgentDataset] updating database records: 3/3
 
 
-You have now reached the end of the quickstart guide. Wan't to know more? 
-Continue to the guide on CollectionBatchTool's 
+You have now reached the end of the quickstart guide. If you want to learn more,
+you can continue to the guide on CollectionBatchTool's 
 :ref:`advanced features <advanced-operations>` or read more about functions, 
 classes and methods in the :ref:`API reference<api>`.

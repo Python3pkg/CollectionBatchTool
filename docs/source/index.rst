@@ -42,19 +42,6 @@ started:
    The current version of CollectionBatchTool (|version|) only supports 
    Python 3.
 
-.. toctree::
-   :caption: Contents
-   :name: mastertoc
-   :maxdepth: 2
-   :glob:
-   
-   collectionbatchtool/installation
-   collectionbatchtool/quickstart
-   collectionbatchtool/advanced-operations
-   collectionbatchtool/preparing-csv-files
-   collectionbatchtool/supported-tables
-   collectionbatchtool/api
-
 
 Project background
 ------------------
@@ -69,6 +56,20 @@ CollectionBatchTool has been developed within the
 `DINA-project <http://dina-project.net>`_ in order to support migration of
 large datasets (100,000+ records) to Specify. The tool was first released 
 in September 2015.
+
+
+.. toctree::
+   :caption: Contents
+   :name: mastertoc
+   :maxdepth: 2
+   :glob:
+   
+   collectionbatchtool/installation
+   collectionbatchtool/quickstart
+   collectionbatchtool/advanced-operations
+   collectionbatchtool/preparing-csv-files
+   collectionbatchtool/supported-tables
+   collectionbatchtool/api
 
 
 Indices and tables
