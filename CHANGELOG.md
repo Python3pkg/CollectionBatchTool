@@ -13,6 +13,7 @@ This release contains a number of small fixes and enhancements.
 * Added PyPI integration via Travis CI
 * Added badges for Tavis CI and PyPI to README.rst
 * Small documentation updates in varous places
+* Improved organization of the collectionbathtool module
 
 Released 2015-??-??
 
