@@ -1,9 +1,17 @@
 language: python
+
 python:
-- '3.2'
-- '3.3'
-- '3.4'
+ - '3.2'
+ - '3.3'
+ - '3.4'
+
+# whitelist
+branches:
+  only:
+    - master
+
 script: echo foo
+
 deploy:
   provider: pypi
   user: jmenglund
