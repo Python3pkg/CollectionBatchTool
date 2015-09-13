@@ -16,7 +16,7 @@ Currently only with support for Python 3.
 
 Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
 
-Documentation at `<http://collectionbatchtool.readthedocs.org/>`_
+Documentation at `<http://collectionbatchtool.readthedocs.org>`_
 
 .. image:: https://badge.fury.io/py/CollectionBatchTool.svg
     :target: http://badge.fury.io/py/CollectionBatchTool
