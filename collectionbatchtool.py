@@ -613,6 +613,121 @@ class TableDataset(object):
                     repr(self.primary_key_column),
                     match_columns, matches, possible_matches))
 
+    def to_csv(
+            self, filepath, update_sourceid=False, drop_empty_columns=False,
+            quiet=True, float_format='%g', index=False, **kwargs):
+        """
+        Write dataset a comma-separated values (CSV) file.
+
+        Parameters
+        ----------
+        filepath : str
+            File path or object.
+        update_sourceid : bool, default False
+            If True, copying ID-columns to SourceID-columns
+            before writing to the CSV file.
+        drop_empty_columns : bool, default False
+            Drop columns that does not contain any data.
+        quiet : bool, default True
+            If True, no output will be written to standard output.
+        float_format : str or None, default '%g'
+            Format string for floating point numbers.
+        index : bool, default False
+            Write row names (index).
+        \**kwargs
+            Arbitrary keyword arguments available in
+            :meth:`pandas.DataFrame.to_csv`.
+        """
+        if update_sourceid:
+            self.update_sourceid(quiet=quiet)
+        if not quiet:
+            print(
+                _bold('[{0}] writing to CSV file: ')
+                .format(self.__class__.__name__), end='')
+            print(os.path.abspath(filepath))
+            sys.stdout.flush()
+        frame = pandas.DataFrame(self.frame[self.file_columns])
+        if drop_empty_columns:
+            frame = frame.dropna(axis=1, how='all')
+        frame.to_csv(
+            filepath, index=index,
+            float_format=float_format, **kwargs)
+        if not quiet:
+            print(
+                '    {0} rows x {1} columns'.format(
+                    frame.shape[0], frame.shape[1]))
+
+    def to_database(
+            self, defaults=None, update_record_metadata=True,
+            chunksize=10000, quiet=True):
+        """
+        Load a dataset into the corresponding table and update
+        the dataset's primary key column from the database.
+
+        Parameters
+        ----------
+        defaults : dict
+            Column name and value to insert instead of nulls.
+        update_record_metadata : bool, default True
+            If True, record metadata will be generated during
+            import, otherwise the metadata will be loaded from the dataset.
+        chunksize : int
+            Size of chunks being uploaded.
+        quiet : bool, default True
+            If True, no output will be written to standard output.
+        """
+        database = self.specify_context['database']
+        print_msg = (
+            _bold('[{}] loading records to database:')
+            .format(self.__class__.__name__))
+        mask = self.frame[self.primary_key_column].isnull()
+        frame_to_upload = self.frame[mask]
+        frame_uploaded = self.frame[~mask]
+        timestamp_columns = []
+        drop_columns = []  # columns to exclude before upload begins
+        drop_columns.extend(
+            [self.primary_key_column] + list(self.key_columns.values()))
+        frame = frame_to_upload.copy()
+        if defaults:
+            frame = _insert_defaults(frame, defaults)
+        if update_record_metadata:
+            timestamp_columns = ['timestampcreated', 'timestampmodified']
+            frame.createdbyagentid = self.specify_context['user_agentid']
+            frame.modifiedbyagentid = self.specify_context['user_agentid']
+            frame.version = 1
+            drop_columns.extend(timestamp_columns)
+        frame = frame.drop(labels=drop_columns, axis=1)
+        frame = frame.dropna(axis=1, how='all')  # drop empty columns
+        frame = frame.where(frame.notnull(), other=None)  # NaN --> None
+        first_id = self._get_next_insert_id()
+        total_records = len(frame)
+        database.connect()
+        with database.atomic():
+            current_record = 0
+            if not quiet:
+                _print_process_status(print_msg, current_record, total_records)
+            for chunk in _chunker(frame, chunksize):
+                insert_query = self.model.insert_many(
+                    _get_records(
+                        chunk, timestamp_columns, self.static_content))
+                insert_query.execute()
+                current_record = current_record + len(chunk)
+                if not quiet:
+                    _print_process_status(
+                        print_msg, current_record, total_records)
+        database.close()
+        next_id = self._get_next_insert_id()
+        if not next_id == first_id:
+            frame_to_upload = frame_to_upload.drop(
+                labels=[self.primary_key_column], axis=1)
+            frame_to_upload[self.primary_key_column] = pandas.Series(
+                range(first_id, first_id + len(frame_to_upload)),
+                index=frame_to_upload.index)
+            self.frame = frame_uploaded.append(
+                frame_to_upload, ignore_index=True)
+        if not quiet:
+            print()
+
     def update_database_records(
             self, columns, update_record_metadata=True, chunksize=1000,
             quiet=True):
@@ -733,121 +848,6 @@ class TableDataset(object):
                         '    {0}: {1}/{2}'
                         .format(
                             repr(column_to_update), matches, possible_matches))
-
-    def to_csv(
-            self, filepath, update_sourceid=False, drop_empty_columns=False,
-            quiet=True, float_format='%g', index=False, **kwargs):
-        """
-        Write dataset a comma-separated values (CSV) file.
-
-        Parameters
-        ----------
-        filepath : str
-            File path or object.
-        update_sourceid : bool, default False
-            If True, copying ID-columns to SourceID-columns
-            before writing to the CSV file.
-        drop_empty_columns : bool, default False
-            Drop columns that does not contain any data.
-        quiet : bool, default True
-            If True, no output will be written to standard output.
-        float_format : str or None, default '%g'
-            Format string for floating point numbers.
-        index : bool, default False
-            Write row names (index).
-        \**kwargs
-            Arbitrary keyword arguments available in
-            :meth:`pandas.DataFrame.to_csv`.
-        """
-        if update_sourceid:
-            self.update_sourceid(quiet=quiet)
-        if not quiet:
-            print(
-                _bold('[{0}] writing to CSV file: ')
-                .format(self.__class__.__name__), end='')
-            print(os.path.abspath(filepath))
-            sys.stdout.flush()
-        frame = pandas.DataFrame(self.frame[self.file_columns])
-        if drop_empty_columns:
-            frame = frame.dropna(axis=1, how='all')
-        frame.to_csv(
-            filepath, index=index,
-            float_format=float_format, **kwargs)
-        if not quiet:
-            print(
-                '    {0} rows x {1} columns'.format(
-                    frame.shape[0], frame.shape[1]))
-
-    def to_database(
-            self, defaults=None, update_record_metadata=True,
-            chunksize=10000, quiet=True):
-        """
-        Load a dataset into the corresponding table and update
-        the dataset's primary key column from the database.
-
-        Parameters
-        ----------
-        defaults : dict
-            Column name and value to insert instead of nulls.
-        update_record_metadata : bool, default True
-            If True, record metadata will be generated during
-            import, otherwise the metadata will be loaded from the dataset.
-        chunksize : int
-            Size of chunks being uploaded.
-        quiet : bool, default True
-            If True, no output will be written to standard output.
-        """
-        database = self.specify_context['database']
-        print_msg = (
-            _bold('[{}] loading records to database:')
-            .format(self.__class__.__name__))
-        mask = self.frame[self.primary_key_column].isnull()
-        frame_to_upload = self.frame[mask]
-        frame_uploaded = self.frame[~mask]
-        timestamp_columns = []
-        drop_columns = []  # columns to exclude before upload begins
-        drop_columns.extend(
-            [self.primary_key_column] + list(self.key_columns.values()))
-        frame = frame_to_upload.copy()
-        if defaults:
-            frame = _insert_defaults(frame, defaults)
-        if update_record_metadata:
-            timestamp_columns = ['timestampcreated', 'timestampmodified']
-            frame.createdbyagentid = self.specify_context['user_agentid']
-            frame.modifiedbyagentid = self.specify_context['user_agentid']
-            frame.version = 1
-            drop_columns.extend(timestamp_columns)
-        frame = frame.drop(labels=drop_columns, axis=1)
-        frame = frame.dropna(axis=1, how='all')  # drop empty columns
-        frame = frame.where(frame.notnull(), other=None)  # NaN --> None
-        first_id = self._get_next_insert_id()
-        total_records = len(frame)
-        database.connect()
-        with database.atomic():
-            current_record = 0
-            if not quiet:
-                _print_process_status(print_msg, current_record, total_records)
-            for chunk in _chunker(frame, chunksize):
-                insert_query = self.model.insert_many(
-                    _get_records(
-                        chunk, timestamp_columns, self.static_content))
-                insert_query.execute()
-                current_record = current_record + len(chunk)
-                if not quiet:
-                    _print_process_status(
-                        print_msg, current_record, total_records)
-        database.close()
-        next_id = self._get_next_insert_id()
-        if not next_id == first_id:
-            frame_to_upload = frame_to_upload.drop(
-                labels=[self.primary_key_column], axis=1)
-            frame_to_upload[self.primary_key_column] = pandas.Series(
-                range(first_id, first_id + len(frame_to_upload)),
-                index=frame_to_upload.index)
-            self.frame = frame_uploaded.append(
-                frame_to_upload, ignore_index=True)
-        if not quiet:
-            print()
 
     def update_sourceid(self, quiet=True):
         """
