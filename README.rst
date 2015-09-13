@@ -10,7 +10,7 @@ specialists, and system administrators.
   `peewee <https://peewee.readthedocs.org>`_ and 
   `pandas <http://pandas.pydata.org>`_
 * Fast uploading of large datasets
-* Requires no prior knowledge in SQL and minimal knowledge in Python
+* Requires no prior knowledge in SQL and little knowledge in Python
 
 Currently only with support for Python 3.
 
