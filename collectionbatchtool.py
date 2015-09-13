@@ -34,141 +34,9 @@ def _bold(msg):
     return (u'\033[1m{0}\033[0m'.format(msg))
 
 
-def _pretty_dict(d, sort=True):
-    """Pretty-formatting for a one-level :class:`<dict>`."""
-    dict_string = '{\n'
-    for (key, value) in (sorted(d.items()) if sort else d.iteritems()):
-        dict_string += '    ' + repr(key) + ': ' + repr(value) + '\n'
-    dict_string = dict_string.rstrip('\n') + '}'
-    return dict_string
-
-
-def _get_noun_form(singular, plural, cnt):
-    """Return the correct noun-form (plural or singular)."""
-    return singular if cnt == 1 else plural
-
-
 def _chunker(seq, chunksize):
     """Iterate over chunks of a sequence object."""
     return (seq[pos:pos + chunksize] for pos in range(0, len(seq), chunksize))
-
-
-def _get_records(frame, timestamp_fields=None, static_content=None):
-    """
-    Yield the rows in a :class:`<pandas.DataFrame>`_ as a dict and
-    optionally add timestamps and static content.
-
-    Parameters
-    ----------
-    frame : :class:`pandas.DataFrame`
-    timestamp_fields : list, default None
-        Names of timestamp-fields to be populated.
-    static_content : dict, default None
-        Static data to add to the records.
-
-    Yields
-    ------
-    dict
-    """
-    timestamp_fields = timestamp_fields if timestamp_fields else []
-    static_content = static_content if static_content else {}
-    for record in frame.to_dict('records'):
-        if timestamp_fields:
-            now_timestamp = datetime.datetime.now()  # same timestamp for
-            for field in timestamp_fields:           # all timestamp-fields
-                record[field] = now_timestamp        # within a record
-        record.update(static_content)
-        yield record
-
-
-def _print_process_status(msg, current_record, total_records):
-    """Print information about the record being processed."""
-    current_record_string = (
-        '{0}/{1}\r'
-        .format(current_record, total_records)
-        .rjust(2*len(str(total_records))+2, ' '))
-    print(msg, current_record_string, end='')
-    sys.stdout.flush()
-
-
-def query_to_dataframe(database, query):
-    """
-    Return result from a peewee :class:`SelectQuery` as a
-    :class:`pandas.DataFrame`."""
-    database.connect()
-    db_frame = pandas.DataFrame(query.dicts().iterator())
-    database.close()
-    return db_frame.fillna(value=nan)
-
-
-def _insert_defaults(frame, defaults):
-    """
-    Return a :class:`pandas.DataFrame` with NaN-values replaced with
-    defaults.
-
-    Parameters
-    ----------
-    frame : :class:`pandas.DataFrame`
-        Contains the data to be changed.
-    defaults : dict
-        Column name and value to insert.
-    """
-    for column in defaults:
-        frame[column] = (frame[column].where(
-            frame[column].notnull(), other=defaults[column]))
-    return frame
-
-
-def _get_invalid_items(items, valid_items, ignore_case=True):
-    """
-    Compare list of items against list of valid items.
-
-    Parameters
-    ----------
-    items : List[str]
-        List of items to compare agains `valid_items`.
-    valid_items : List[str]
-        List of valid items.
-    ignore_case : bool, default True
-        If True, matching will be case-insensitive.
-
-    Returns
-    -------
-    List[str] or None
-        Subset of `items` not in `valid_items` or None if all items
-        are valid.
-    """
-    if ignore_case:
-        items = list(map(str.lower, items))
-        valid_items = list(map(str.lower, valid_items))
-    if set(items).issubset(set(valid_items)):
-        invalid_items = None
-    else:
-        invalid_items = list(set(items).difference(set(valid_items)))
-    return invalid_items
-
-
-def _validate_column_names(columns, valid_columns):
-    """
-    Validate list of column names.
-
-    columns : List[str]
-        List of columns to compare agains `valid_columns`.
-    valid_columns : List[str]
-        List of valid columns.
-
-    Raises
-    ------
-    KeyError
-        If any name in `columns` is not in `valid_columns`.
-    """
-    invalid_columns = _get_invalid_items(
-        items=columns, valid_items=valid_columns, ignore_case=True)
-    if invalid_columns:
-        print('Invalid columns:')
-        print(invalid_columns)
-        raise KeyError(
-            'Could not set "frame" due to invalid column name(s).')
 
 
 def _get_collection_context(database, collection_name):
@@ -219,6 +87,68 @@ def _get_collection_context(database, collection_name):
         database.close()
 
 
+def _get_invalid_items(items, valid_items, ignore_case=True):
+    """
+    Compare list of items against list of valid items.
+
+    Parameters
+    ----------
+    items : List[str]
+        List of items to compare agains `valid_items`.
+    valid_items : List[str]
+        List of valid items.
+    ignore_case : bool, default True
+        If True, matching will be case-insensitive.
+
+    Returns
+    -------
+    List[str] or None
+        Subset of `items` not in `valid_items` or None if all items
+        are valid.
+    """
+    if ignore_case:
+        items = list(map(str.lower, items))
+        valid_items = list(map(str.lower, valid_items))
+    if set(items).issubset(set(valid_items)):
+        invalid_items = None
+    else:
+        invalid_items = list(set(items).difference(set(valid_items)))
+    return invalid_items
+
+
+def _get_noun_form(singular, plural, cnt):
+    """Return the correct noun-form (plural or singular)."""
+    return singular if cnt == 1 else plural
+
+
+def _get_records(frame, timestamp_fields=None, static_content=None):
+    """
+    Yield the rows in a :class:`<pandas.DataFrame>`_ as a dict and
+    optionally add timestamps and static content.
+
+    Parameters
+    ----------
+    frame : :class:`pandas.DataFrame`
+    timestamp_fields : list, default None
+        Names of timestamp-fields to be populated.
+    static_content : dict, default None
+        Static data to add to the records.
+
+    Yields
+    ------
+    dict
+    """
+    timestamp_fields = timestamp_fields if timestamp_fields else []
+    static_content = static_content if static_content else {}
+    for record in frame.to_dict('records'):
+        if timestamp_fields:
+            now_timestamp = datetime.datetime.now()  # same timestamp for
+            for field in timestamp_fields:           # all timestamp-fields
+                record[field] = now_timestamp        # within a record
+        record.update(static_content)
+        yield record
+
+
 def _get_user_agentid(database, divisionid, specify_username):
     """
     Get the AgentID within a division for a Specify user.
@@ -254,6 +184,66 @@ def _get_user_agentid(database, divisionid, specify_username):
         raise
     finally:
         database.close()
+
+
+def _insert_defaults(frame, defaults):
+    """
+    Return a :class:`pandas.DataFrame` with NaN-values replaced with
+    defaults.
+
+    Parameters
+    ----------
+    frame : :class:`pandas.DataFrame`
+        Contains the data to be changed.
+    defaults : dict
+        Column name and value to insert.
+    """
+    for column in defaults:
+        frame[column] = (frame[column].where(
+            frame[column].notnull(), other=defaults[column]))
+    return frame
+
+
+def _pretty_dict(d, sort=True):
+    """Pretty-formatting for a one-level :class:`<dict>`."""
+    dict_string = '{\n'
+    for (key, value) in (sorted(d.items()) if sort else d.iteritems()):
+        dict_string += '    ' + repr(key) + ': ' + repr(value) + '\n'
+    dict_string = dict_string.rstrip('\n') + '}'
+    return dict_string
+
+
+def _print_process_status(msg, current_record, total_records):
+    """Print information about the record being processed."""
+    current_record_string = (
+        '{0}/{1}\r'
+        .format(current_record, total_records)
+        .rjust(2*len(str(total_records))+2, ' '))
+    print(msg, current_record_string, end='')
+    sys.stdout.flush()
+
+
+def _validate_column_names(columns, valid_columns):
+    """
+    Validate list of column names.
+
+    columns : List[str]
+        List of columns to compare agains `valid_columns`.
+    valid_columns : List[str]
+        List of valid columns.
+
+    Raises
+    ------
+    KeyError
+        If any name in `columns` is not in `valid_columns`.
+    """
+    invalid_columns = _get_invalid_items(
+        items=columns, valid_items=valid_columns, ignore_case=True)
+    if invalid_columns:
+        print('Invalid columns:')
+        print(invalid_columns)
+        raise KeyError(
+            'Could not set "frame" due to invalid column name(s).')
 
 
 def apply_user_settings(filepath, quiet=True):
@@ -304,6 +294,16 @@ def apply_user_settings(filepath, quiet=True):
                 .format(
                     os.path.abspath(filepath), repr(db_name), repr(db_host),
                     repr(collection), repr(specify_username)))
+
+
+def query_to_dataframe(database, query):
+    """
+    Return result from a peewee :class:`SelectQuery` as a
+    :class:`pandas.DataFrame`."""
+    database.connect()
+    db_frame = pandas.DataFrame(query.dicts().iterator())
+    database.close()
+    return db_frame.fillna(value=nan)
 
 
 class TableDataset(object):
@@ -448,16 +448,6 @@ class TableDataset(object):
             'static_content']
         return frame[columns]
 
-    def _get_update_query(self, record):
-        """Return a peewee :class:`SelectQuery` for updating a record."""
-        primary_key_field = getattr(self.model, self.primary_key_column)
-        primary_key_value = record[self.primary_key_column]
-        del record[self.primary_key_column]
-        update_query = (
-            self.model.update(**record)
-            .where(primary_key_field == primary_key_value))
-        return update_query
-
     def _get_next_insert_id(self):
         """Get next autoincrement value."""
         database = self.specify_context['database']
@@ -469,6 +459,16 @@ class TableDataset(object):
             .format(table_name, database.database))
         return database.execute_sql(sql_query).fetchone()[0]
         database.close()
+
+    def _get_update_query(self, record):
+        """Return a peewee :class:`SelectQuery` for updating a record."""
+        primary_key_field = getattr(self.model, self.primary_key_column)
+        primary_key_value = record[self.primary_key_column]
+        del record[self.primary_key_column]
+        update_query = (
+            self.model.update(**record)
+            .where(primary_key_field == primary_key_value))
+        return update_query
 
     def from_csv(self, filepath, quiet=True, **kwargs):
         """Read dataset from a CSV file.
@@ -613,61 +613,6 @@ class TableDataset(object):
                     repr(self.primary_key_column),
                     match_columns, matches, possible_matches))
 
-    def update_foreign_keys(self, from_datasets, quiet=False):
-        """
-        Update foreign key values from a related dataset based
-        on sourceid values.
-
-        Parameters
-        ----------
-        from_datasets : :class:`TableDataset` or List[:class:`TableDataset`]
-            Dataset(s) from which foreign key values will be updated.
-        quiet : bool, default False
-            If True, no output will be written to standard output.
-        """
-        if not quiet:
-            print(
-                _bold('[{0}] updating foreign keys... ')
-                .format(self.__class__.__name__))
-            sys.stdout.flush()
-        if isinstance(from_datasets, TableDataset):
-            from_datasets = [from_datasets]
-        for dataset in from_datasets:
-            try:
-                columns_to_update = self.foreign_key_columns[dataset.model]
-            except KeyError:
-                print(
-                    'No columns related to dataset of class {0}.'
-                    .format(dataset.__class__))
-                raise
-            for column_to_update in columns_to_update:
-                update_from_column = getattr(
-                    self.model, column_to_update).to_field.name
-                left_on = self.key_columns[column_to_update]
-                right_on = dataset.key_columns[update_from_column]
-                if (
-                    self.frame[left_on].notnull().any() and
-                    dataset.frame[right_on].notnull().any()
-                ):
-                    right_frame = dataset.frame[[right_on, update_from_column]]
-                    # Rename columns in the right frame
-                    right_frame.columns = [left_on, column_to_update]
-                    left_frame = self.frame.drop(
-                        labels=[column_to_update], axis=1)
-                    # Left join frames
-                    left_frame = left_frame.merge(
-                        right_frame, how='left', on=left_on)
-                    self.frame = left_frame
-                else:
-                    self.frame[column_to_update] = nan
-                if not quiet:
-                    (matches, possible_matches) = self.get_match_count(
-                        column_to_update, left_on)
-                    print(
-                        '    {0}: {1}/{2}'
-                        .format(
-                            repr(column_to_update), matches, possible_matches))
-
     def update_database_records(
             self, columns, update_record_metadata=True, chunksize=1000,
             quiet=True):
@@ -733,6 +678,105 @@ class TableDataset(object):
         database.close()
         if not quiet:
             print()
+
+    def update_foreign_keys(self, from_datasets, quiet=False):
+        """
+        Update foreign key values from a related dataset based
+        on sourceid values.
+
+        Parameters
+        ----------
+        from_datasets : :class:`TableDataset` or List[:class:`TableDataset`]
+            Dataset(s) from which foreign key values will be updated.
+        quiet : bool, default False
+            If True, no output will be written to standard output.
+        """
+        if not quiet:
+            print(
+                _bold('[{0}] updating foreign keys... ')
+                .format(self.__class__.__name__))
+            sys.stdout.flush()
+        if isinstance(from_datasets, TableDataset):
+            from_datasets = [from_datasets]
+        for dataset in from_datasets:
+            try:
+                columns_to_update = self.foreign_key_columns[dataset.model]
+            except KeyError:
+                print(
+                    'No columns related to dataset of class {0}.'
+                    .format(dataset.__class__))
+                raise
+            for column_to_update in columns_to_update:
+                update_from_column = getattr(
+                    self.model, column_to_update).to_field.name
+                left_on = self.key_columns[column_to_update]
+                right_on = dataset.key_columns[update_from_column]
+                if (
+                    self.frame[left_on].notnull().any() and
+                    dataset.frame[right_on].notnull().any()
+                ):
+                    right_frame = dataset.frame[[right_on, update_from_column]]
+                    # Rename columns in the right frame
+                    right_frame.columns = [left_on, column_to_update]
+                    left_frame = self.frame.drop(
+                        labels=[column_to_update], axis=1)
+                    # Left join frames
+                    left_frame = left_frame.merge(
+                        right_frame, how='left', on=left_on)
+                    self.frame = left_frame
+                else:
+                    self.frame[column_to_update] = nan
+                if not quiet:
+                    (matches, possible_matches) = self.get_match_count(
+                        column_to_update, left_on)
+                    print(
+                        '    {0}: {1}/{2}'
+                        .format(
+                            repr(column_to_update), matches, possible_matches))
+
+    def to_csv(
+            self, filepath, update_sourceid=False, drop_empty_columns=False,
+            quiet=True, float_format='%g', index=False, **kwargs):
+        """
+        Write dataset a comma-separated values (CSV) file.
+
+        Parameters
+        ----------
+        filepath : str
+            File path or object.
+        update_sourceid : bool, default False
+            If True, copying ID-columns to SourceID-columns
+            before writing to the CSV file.
+        drop_empty_columns : bool, default False
+            Drop columns that does not contain any data.
+        quiet : bool, default True
+            If True, no output will be written to standard output.
+        float_format : str or None, default '%g'
+            Format string for floating point numbers.
+        index : bool, default False
+            Write row names (index).
+        \**kwargs
+            Arbitrary keyword arguments available in
+            :meth:`pandas.DataFrame.to_csv`.
+        """
+        if update_sourceid:
+            self.update_sourceid(quiet=quiet)
+        if not quiet:
+            print(
+                _bold('[{0}] writing to CSV file: ')
+                .format(self.__class__.__name__), end='')
+            print(os.path.abspath(filepath))
+            sys.stdout.flush()
+        frame = pandas.DataFrame(self.frame[self.file_columns])
+        if drop_empty_columns:
+            frame = frame.dropna(axis=1, how='all')
+        frame.to_csv(
+            filepath, index=index,
+            float_format=float_format, **kwargs)
+        if not quiet:
+            print(
+                '    {0} rows x {1} columns'.format(
+                    frame.shape[0], frame.shape[1]))
 
     def to_database(
             self, defaults=None, update_record_metadata=True,
@@ -834,50 +878,6 @@ class TableDataset(object):
                 self.frame[
                     self.key_columns[key_column]
                 ] = self.frame[key_column]
-
-    def to_csv(
-            self, filepath, update_sourceid=False, drop_empty_columns=False,
-            quiet=True, float_format='%g', index=False, **kwargs):
-        """
-        Write dataset a comma-separated values (CSV) file.
-
-        Parameters
-        ----------
-        filepath : str
-            File path or object.
-        update_sourceid : bool, default False
-            If True, copying ID-columns to SourceID-columns
-            before writing to the CSV file.
-        drop_empty_columns : bool, default False
-            Drop columns that does not contain any data.
-        quiet : bool, default True
-            If True, no output will be written to standard output.
-        float_format : str or None, default '%g'
-            Format string for floating point numbers.
-        index : bool, default False
-            Write row names (index).
-        \**kwargs
-            Arbitrary keyword arguments available in
-            :meth:`pandas.DataFrame.to_csv`.
-        """
-        if update_sourceid:
-            self.update_sourceid(quiet=quiet)
-        if not quiet:
-            print(
-                _bold('[{0}] writing to CSV file: ')
-                .format(self.__class__.__name__), end='')
-            print(os.path.abspath(filepath))
-            sys.stdout.flush()
-        frame = pandas.DataFrame(self.frame[self.file_columns])
-        if drop_empty_columns:
-            frame = frame.dropna(axis=1, how='all')
-        frame.to_csv(
-            filepath, index=index,
-            float_format=float_format, **kwargs)
-        if not quiet:
-            print(
-                '    {0} rows x {1} columns'.format(
-                    frame.shape[0], frame.shape[1]))
 
     def write_mapping_to_csv(
             self, filepath, quiet=True, float_format='%g',
