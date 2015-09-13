@@ -17,7 +17,7 @@ This release contains a number of small fixes and enhancements.
 
 Released 2015-09-13
 
-[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/0.1.0...0.1.1)
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.0...v0.1.1)
 
 
 ## 0.1.0 ##
