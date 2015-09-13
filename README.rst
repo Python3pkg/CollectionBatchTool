@@ -18,6 +18,9 @@ Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
 
 Documentation at `<http://collectionbatchtool.readthedocs.org/>`_
 
+.. image:: https://badge.fury.io/py/CollectionBatchTool.svg
+    :target: http://badge.fury.io/py/CollectionBatchTool
+
 .. image:: https://api.travis-ci.org/jmenglund/CollectionBatchTool.svg?branch=master
   :target: https://travis-ci.org/jmenglund/CollectionBatchTool
 
