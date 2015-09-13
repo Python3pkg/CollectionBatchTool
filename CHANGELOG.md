@@ -15,7 +15,7 @@ This release contains a number of small fixes and enhancements.
 * Small documentation updates in varous places
 * Improved organization of the collectionbathtool module
 
-Released 2015-??-??
+Released 2015-09-13
 
 [View commits](https://github.com/jmenglund/CollectionBatchTool/compare/0.1.0...0.1.1)
 
