@@ -41,7 +41,7 @@ CollectionBatchTool:
 Setting up the database connection
 ----------------------------------
 
-CollectionBatchTool let you work with one Specify collection at a time.
+CollectionBatchTool lets you work with one Specify collection at a time.
 Enter your personal settings in a configuration file similar to what is shown 
 below. Then, save the file with a suitable name, for example 
 :file:`settings.cfg`.
