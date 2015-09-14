@@ -2,7 +2,6 @@
 
 """import_sample_data.py - script for importing sample data"""
 
-import os
 from collectionbatchtool import *
 
 apply_user_settings('settings.cfg')  # change to your own config-file!
