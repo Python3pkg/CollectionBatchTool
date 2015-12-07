@@ -333,7 +333,7 @@ class TableDataset(object):
     @property
     def database_columns(self):
         """List with available database columns."""
-        return self.model._meta.get_field_names()
+        return list(self.model._meta.fields.keys())
 
     @property
     def all_columns(self):
@@ -1012,7 +1012,8 @@ class GeographyDataset(TableDataset, TreeDataset):
             'geographyid': 'geography_sourceid',
             'geographytreedefitemid': 'geographytreedefitem_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
-            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'parentid': 'parent_sourceid'
         }
         static_content = {
             'geographytreedefid': self.specify_context['geographytreedefid']
@@ -1191,7 +1192,8 @@ class StorageDataset(TableDataset, TreeDataset):
             'storageid': 'storage_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
-            'storagetreedefitemid': 'storagetreedefitem_sourceid'
+            'storagetreedefitemid': 'storagetreedefitem_sourceid',
+            'parentid': 'parent_sourceid'
         }
         static_content = {
             'storagetreedefid': self.specify_context['storagetreedefid']
@@ -1281,7 +1283,8 @@ class TaxonDataset(TableDataset, TreeDataset):
             'taxonid': 'taxon_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
-            'taxontreedefitemid': 'taxontreedefitem_sourceid'
+            'taxontreedefitemid': 'taxontreedefitem_sourceid',
+            'parentid': 'parent_sourceid'
         }
         static_content = {
             'taxontreedefid': self.specify_context['taxontreedefid']
