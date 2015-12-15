@@ -733,7 +733,7 @@ class TableDataset(object):
             print()
 
     def update_database_records(
-            self, columns, update_record_metadata=True, chunksize=1000,
+            self, columns, update_record_metadata=True, chunksize=10000,
             quiet=True):
         """
         Update records in database with matching primary key values.
