@@ -1135,10 +1135,8 @@ class CollectorDataset(TableDataset):
             """
             return (self.model
                 .select(self.model)
-                .join(specifymodels.Collectingevent).where(
-                    self.where_clause &
-                    (specifymodels.Collectingevent.disciplineid ==
-                    self.specify_context['disciplineid'])))
+                .join(specifymodels.Collectingevent).where(self.where_clause)
+            )
 
 
 class CollectionobjectattributeDataset(TableDataset):
