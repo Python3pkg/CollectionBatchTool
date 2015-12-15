@@ -615,7 +615,8 @@ class TableDataset(object):
 
     def to_csv(
             self, filepath, update_sourceid=False, drop_empty_columns=False,
-            quiet=True, float_format='%g', index=False, **kwargs):
+            quiet=True, encoding='utf-8', float_format='%g', index=False,
+            **kwargs):
         """
         Write dataset a comma-separated values (CSV) file.
 
@@ -630,6 +631,8 @@ class TableDataset(object):
             Drop columns that does not contain any data.
         quiet : bool, default True
             If True, no output will be written to standard output.
+        encoding : str, default 'utf-8'
+            A string representing the encoding to use in the output file.
         float_format : str or None, default '%g'
             Format string for floating point numbers.
         index : bool, default False
