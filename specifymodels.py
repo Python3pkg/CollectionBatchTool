@@ -360,6 +360,10 @@ class Collectingeventattribute(BaseModel):
 
 
 class Collectingevent(BaseModel):
+    collectingeventattributeid = ForeignKeyField(
+        db_column='CollectingEventAttributeID', null=True,
+        rel_model=Collectingeventattribute,
+        to_field='collectingeventattributeid')
     collectingeventid = PrimaryKeyField(db_column='CollectingEventID')
     createdbyagentid = ForeignKeyField(
         db_column='CreatedByAgentID', null=True, rel_model=Agent,
