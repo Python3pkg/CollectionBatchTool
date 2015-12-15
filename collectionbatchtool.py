@@ -655,6 +655,7 @@ class TableDataset(object):
         frame.to_csv(
             filepath, index=index,
             float_format=float_format, **kwargs)
+            float_format=float_format, encoding=encoding, **kwargs)
         if not quiet:
             print(
                 '    {0} rows x {1} columns'.format(
