@@ -1079,6 +1079,7 @@ class CollectingeventDataset(TableDataset):
     def __init__(self):
         model = specifymodels.Collectingevent
         key_columns = {
+            'collectingeventattributeid': 'collectingeventattribute_sourceid',
             'collectingeventid': 'collectingevent_sourceid',
             'localityid': 'locality_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
