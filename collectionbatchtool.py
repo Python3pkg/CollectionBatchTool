@@ -654,7 +654,6 @@ class TableDataset(object):
             frame = frame.dropna(axis=1, how='all')
         frame.to_csv(
             filepath, index=index,
-            float_format=float_format, **kwargs)
             float_format=float_format, encoding=encoding, **kwargs)
         if not quiet:
             print(
