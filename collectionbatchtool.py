@@ -1119,6 +1119,24 @@ class CollectorDataset(TableDataset):
         frame = pandas.DataFrame()
         super(CollectorDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
+            
+        @property
+        def database_query(self):
+            """
+            Database query for reading collector data from the database.
+            
+            Note
+            ----
+            This query is defined specifically for the CollectorDataset
+            class in order select only records associated with the 
+            current collection.
+            """
+            return (self.model
+                .select(self.model)
+                .join(specifymodels.Collectingevent).where(
+                    self.where_clause &
+                    (specifymodels.Collectingevent.disciplineid ==
+                    self.specify_context['disciplineid'])))
 
 
 class CollectionobjectattributeDataset(TableDataset):
