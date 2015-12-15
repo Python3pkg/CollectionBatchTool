@@ -1016,7 +1016,8 @@ class GeographyDataset(TableDataset, TreeDataset):
             'geographytreedefitemid': 'geographytreedefitem_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
-            'parentid': 'parent_sourceid'
+            'parentid': 'parent_sourceid',
+            'acceptedid': 'accepted_sourceid'
         }
         static_content = {
             'geographytreedefid': self.specify_context['geographytreedefid']
@@ -1288,7 +1289,8 @@ class TaxonDataset(TableDataset, TreeDataset):
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
             'taxontreedefitemid': 'taxontreedefitem_sourceid',
-            'parentid': 'parent_sourceid'
+            'parentid': 'parent_sourceid',
+            'acceptedid': 'accepted_sourceid'
         }
         static_content = {
             'taxontreedefid': self.specify_context['taxontreedefid']
