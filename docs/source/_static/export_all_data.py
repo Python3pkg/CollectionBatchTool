@@ -6,7 +6,7 @@ import os
 from collectionbatchtool import *
 
 
-def export_all_data(output_dir=None):
+def export_all_data(output_dir=None, quiet=True):
     """
     Export table data to CSV files.
 
@@ -19,12 +19,13 @@ def export_all_data(output_dir=None):
     for tabledataset_subclass in TableDataset.__subclasses__():
         instance = tabledataset_subclass()
         if instance.database_query.count() > 0:  # no files without data
-            instance.from_database(quiet=False)
+            instance.from_database(quiet=quiet)
             filename = instance.model.__name__.lower() + '.csv'
             filepath = os.path.join(output_dir, filename)
-            instance.to_csv(filepath, update_sourceid=True, quiet=False)
+            instance.to_csv(
+                filepath, update_sourceid=True, quiet=quiet)
 
 
 if __name__ == '__main__':
     apply_user_settings('settings.cfg')  # change to your own config-file!
-    export_all_data()  # call the export function
+    export_all_data(quiet=False)  # call the export function
