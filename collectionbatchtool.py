@@ -1156,6 +1156,8 @@ class CollectionobjectDataset(TableDataset):
     def __init__(self):
         model = specifymodels.Collectionobject
         key_columns = {
+            'collectionobjectattributeid':
+                'collectionobjectattribute_sourceid',
             'collectionobjectid': 'collectionobject_sourceid',
             'collectingeventid': 'collectingevent_sourceid',
             'catalogerid': 'cataloger_agent_sourceid',
