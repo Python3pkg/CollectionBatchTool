@@ -1121,10 +1121,9 @@ class CollectorDataset(TableDataset):
         }
         where_clause = (
             (specifymodels.Collector.divisionid ==
-            self.specify_context['divisionid']) &
-            (specifymodels.Collectingevent.disciplineid ==
-            self.specify_context['disciplineid'])
-        )
+            self.specify_context['divisionid']) & (
+            specifymodels.Collectingevent.disciplineid ==
+            self.specify_context['disciplineid']))
         frame = pandas.DataFrame()
         super(CollectorDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
