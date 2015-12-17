@@ -360,6 +360,10 @@ class Collectingeventattribute(BaseModel):
 
 
 class Collectingevent(BaseModel):
+    collectingeventattributeid = ForeignKeyField(
+        db_column='CollectingEventAttributeID', null=True,
+        rel_model=Collectingeventattribute,
+        to_field='collectingeventattributeid')
     collectingeventid = PrimaryKeyField(db_column='CollectingEventID')
     createdbyagentid = ForeignKeyField(
         db_column='CreatedByAgentID', null=True, rel_model=Agent,
@@ -542,6 +546,10 @@ class Collectionobject(BaseModel):
         to_field='usergroupscopeid')
     collectionmemberid = IntegerField(
         db_column='CollectionMemberID', index=True)
+    collectionobjectattributeid = ForeignKeyField(
+        db_column='CollectionObjectAttributeID', null=True,
+        rel_model=Collectionobjectattribute,
+        to_field='collectionobjectattributeid')
     collectionobjectid = PrimaryKeyField(db_column='CollectionObjectID')
     countamt = IntegerField(db_column='CountAmt', null=True)
     createdbyagentid = ForeignKeyField(

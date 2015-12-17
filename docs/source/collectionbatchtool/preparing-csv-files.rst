@@ -65,30 +65,10 @@ from) the agent-table.
 
    >>> agt = AgentDataset()
    >>> agt.file_columns
-   ['agent_sourceid',
-    'createdbyagent_sourceid',
-    'modifiedbyagent_sourceid',
-    'parentorganization_sourceid',
-    'abbreviation',
-    'agenttype',
-    'dateofbirth',
-    'dateofbirthprecision',
-    'dateofdeath',
-    'dateofdeathprecision',
-    'datetype',
-    'email',
-    'firstname',
-    'guid',
-    'initials',
-    'interests',
-    'jobtitle',
-    'lastname',
-    'middleinitial',
-    'remarks',
-    'suffix',
-    'timestampcreated',
-    'timestampmodified',
-    'title',
-    'url',
-    'version']
+   ['agent_sourceid', 'createdbyagent_sourceid', 'modifiedbyagent_sourceid',
+   'parentorganization_sourceid', 'abbreviation', 'agenttype', 'dateofbirth',
+   'dateofbirthprecision', 'dateofdeath', 'dateofdeathprecision', 'datetype',
+   'email', 'firstname', 'guid', 'initials', 'interests', 'jobtitle', 'lastname',
+   'middleinitial', 'remarks', 'suffix', 'timestampcreated', 'timestampmodified',
+   'title', 'url', 'version']
 

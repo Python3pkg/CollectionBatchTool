@@ -19,6 +19,7 @@ specialists, and system administrators.
 * Fast uploading of large datasets
 * Requires no prior knowledge in SQL and little knowledge in Python
 
+
 .. image:: _static/specify_project_logo.png
    :target: http://specifyx.specifysoftware.org
    :width: 150px
@@ -39,7 +40,7 @@ started:
   tables currently supported.
 
 .. important::
-   The current version of CollectionBatchTool (|version|) only supports 
+   The current version of CollectionBatchTool (|release|) only supports 
    Python 3.
 
 

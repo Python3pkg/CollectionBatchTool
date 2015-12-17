@@ -17,7 +17,7 @@ from numpy import nan
 
 __authors__ = "Markus Englund"
 __license__ = "MIT"
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 # For Python 2 and 3 compatibility
@@ -333,7 +333,7 @@ class TableDataset(object):
     @property
     def database_columns(self):
         """List with available database columns."""
-        return self.model._meta.get_field_names()
+        return list(self.model._meta.fields.keys())
 
     @property
     def all_columns(self):
@@ -379,7 +379,14 @@ class TableDataset(object):
     @property
     def database_query(self):
         """Database query for reading the data from the database."""
-        return self.model.select().where(self.where_clause)
+        if isinstance(self, CollectorDataset):
+            q = (
+                self.model.select()
+                .join(specifymodels.Collectingevent)
+                .where(self.where_clause))
+        else:
+            q = self.model.select().where(self.where_clause)
+        return q
 
     @frame.setter
     def frame(self, frame):
@@ -615,7 +622,8 @@ class TableDataset(object):
 
     def to_csv(
             self, filepath, update_sourceid=False, drop_empty_columns=False,
-            quiet=True, float_format='%g', index=False, **kwargs):
+            quiet=True, encoding='utf-8', float_format='%g', index=False,
+            **kwargs):
         """
         Write dataset a comma-separated values (CSV) file.
 
@@ -630,6 +638,8 @@ class TableDataset(object):
             Drop columns that does not contain any data.
         quiet : bool, default True
             If True, no output will be written to standard output.
+        encoding : str, default 'utf-8'
+            A string representing the encoding to use in the output file.
         float_format : str or None, default '%g'
             Format string for floating point numbers.
         index : bool, default False
@@ -651,7 +661,7 @@ class TableDataset(object):
             frame = frame.dropna(axis=1, how='all')
         frame.to_csv(
             filepath, index=index,
-            float_format=float_format, **kwargs)
+            float_format=float_format, encoding=encoding, **kwargs)
         if not quiet:
             print(
                 '    {0} rows x {1} columns'.format(
@@ -729,7 +739,7 @@ class TableDataset(object):
             print()
 
     def update_database_records(
-            self, columns, update_record_metadata=True, chunksize=1000,
+            self, columns, update_record_metadata=True, chunksize=10000,
             quiet=True):
         """
         Update records in database with matching primary key values.
@@ -1012,7 +1022,9 @@ class GeographyDataset(TableDataset, TreeDataset):
             'geographyid': 'geography_sourceid',
             'geographytreedefitemid': 'geographytreedefitem_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
-            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'parentid': 'parent_sourceid',
+            'acceptedid': 'accepted_sourceid'
         }
         static_content = {
             'geographytreedefid': self.specify_context['geographytreedefid']
@@ -1075,6 +1087,7 @@ class CollectingeventDataset(TableDataset):
     def __init__(self):
         model = specifymodels.Collectingevent
         key_columns = {
+            'collectingeventattributeid': 'collectingeventattribute_sourceid',
             'collectingeventid': 'collectingevent_sourceid',
             'localityid': 'locality_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
@@ -1107,9 +1120,10 @@ class CollectorDataset(TableDataset):
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            specifymodels.Collector.divisionid ==
-            self.specify_context['divisionid']
-        )
+            (specifymodels.Collector.divisionid ==
+            self.specify_context['divisionid']) & (
+            specifymodels.Collectingevent.disciplineid ==
+            self.specify_context['disciplineid']))
         frame = pandas.DataFrame()
         super(CollectorDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
@@ -1142,6 +1156,8 @@ class CollectionobjectDataset(TableDataset):
     def __init__(self):
         model = specifymodels.Collectionobject
         key_columns = {
+            'collectionobjectattributeid':
+                'collectionobjectattribute_sourceid',
             'collectionobjectid': 'collectionobject_sourceid',
             'collectingeventid': 'collectingevent_sourceid',
             'catalogerid': 'cataloger_agent_sourceid',
@@ -1191,7 +1207,8 @@ class StorageDataset(TableDataset, TreeDataset):
             'storageid': 'storage_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
-            'storagetreedefitemid': 'storagetreedefitem_sourceid'
+            'storagetreedefitemid': 'storagetreedefitem_sourceid',
+            'parentid': 'parent_sourceid'
         }
         static_content = {
             'storagetreedefid': self.specify_context['storagetreedefid']
@@ -1281,7 +1298,9 @@ class TaxonDataset(TableDataset, TreeDataset):
             'taxonid': 'taxon_sourceid',
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
-            'taxontreedefitemid': 'taxontreedefitem_sourceid'
+            'taxontreedefitemid': 'taxontreedefitem_sourceid',
+            'parentid': 'parent_sourceid',
+            'acceptedid': 'accepted_sourceid'
         }
         static_content = {
             'taxontreedefid': self.specify_context['taxontreedefid']
