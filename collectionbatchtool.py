@@ -17,7 +17,7 @@ from numpy import nan
 
 __authors__ = "Markus Englund"
 __license__ = "MIT"
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 
 # For Python 2 and 3 compatibility

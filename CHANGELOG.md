@@ -3,6 +3,13 @@
 Tracking changes in CollectionBatchTool between versions. 
 See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
+## 0.1.3 ##
+
+This release was created only to get things working correctly on PyPI.
+There should be no substantial changes from the previous release.
+
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.2...v0.1.3)
+
 ## 0.1.2 ##
 
 This release contains a number of small fixes and enhancements.
