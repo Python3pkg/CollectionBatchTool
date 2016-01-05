@@ -4,6 +4,19 @@ Tracking changes in CollectionBatchTool between versions.
 See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
 
+## 0.1.2 ##
+
+This release contains a number of small fixes and enhancements.
+
+### New features ###
+
+* 
+
+Released 2015-12-18
+
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.1...v0.1.2)
+
+
 ## 0.1.1 ##
 
 This release contains a number of small fixes and enhancements.
