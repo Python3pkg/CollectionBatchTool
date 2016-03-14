@@ -3,10 +3,12 @@
 """export_all_data.py - script for exporting all available data"""
 
 import os
+import argparse
+
 from collectionbatchtool import *
 
 
-def export_all_data(output_dir=None, quiet=True):
+def export_all_data(config_file, output_dir=None, quiet=True):
     """
     Export table data to CSV files.
 
@@ -15,6 +17,7 @@ def export_all_data(output_dir=None, quiet=True):
     output_dir : str
         Path to the output directory.
     """
+    apply_user_settings(config_file) 
     output_dir = output_dir if output_dir else ''
     for tabledataset_subclass in TableDataset.__subclasses__():
         instance = tabledataset_subclass()
@@ -27,5 +30,22 @@ def export_all_data(output_dir=None, quiet=True):
 
 
 if __name__ == '__main__':
-    apply_user_settings('settings.cfg')  # change to your own config-file!
-    export_all_data(quiet=False)  # call the export function
+    parser = argparse.ArgumentParser(
+        description='A command-line script that exports Specify data.')
+    parser.add_argument(
+        'config_file', type=argparse.FileType('rU'),
+        help='path to a config-file')
+    parser.add_argument('output_dir', default='.', nargs='?',
+        help='path to output directory')
+    parser.add_argument(
+        '-v', '--verbose', action='store_true')
+    args = parser.parse_args()
+ 
+    if not os.path.isdir(args.output_dir):
+        msg = "%d is not valid directory" % args.output_dir
+        raise argparse.ArgumentTypeError(msg)
+    
+    quiet=False if args.verbose else False
+ 
+    export_all_data(
+        args.config_file.name, output_dir=args.output_dir, quiet=False)
