@@ -143,6 +143,143 @@ class Discipline(BaseModel):
         db_table = 'discipline'
 
 
+class Addressofrecord(BaseModel):
+    address = CharField(db_column='Address', null=True)
+    address2 = CharField(db_column='Address2', null=True)
+    addressofrecordid = PrimaryKeyField(db_column='AddressOfRecordID')
+    agentid = ForeignKeyField(
+        db_column='AgentID', null=True, rel_model=Agent, to_field='agentid')
+    city = CharField(db_column='City', null=True)
+    country = CharField(db_column='Country', null=True)
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        related_name='addressofrecord_createdbyagentid_set',
+        to_field='agentid')
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='addressofrecord_modifiedbyagentid_set',
+        to_field='agentid')
+    postalcode = CharField(db_column='PostalCode', null=True)
+    remarks = TextField(db_column='Remarks', null=True)
+    state = CharField(db_column='State', null=True)
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    version = IntegerField(db_column='Version', null=True)
+
+    class Meta:
+        db_table = 'addressofrecord'
+
+
+class Repositoryagreement(BaseModel):
+    addressofrecordid = ForeignKeyField(
+        db_column='AddressOfRecordID', null=True, rel_model=Addressofrecord,
+        to_field='addressofrecordid')
+    agentid = ForeignKeyField(
+        db_column='AgentID', rel_model=Agent, to_field='agentid')
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        related_name='repositoryagreement_createdbyagentid_set',
+        to_field='agentid')
+    datereceived = DateField(db_column='DateReceived', null=True)
+    divisionid = ForeignKeyField(
+        db_column='DivisionID', rel_model=Division,
+        to_field='usergroupscopeid')
+    enddate = DateField(db_column='EndDate', null=True)
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='repositoryagreement_modifiedbyagentid_set',
+        to_field='agentid')
+    number1 = FloatField(db_column='Number1', null=True)
+    number2 = FloatField(db_column='Number2', null=True)
+    remarks = TextField(db_column='Remarks', null=True)
+    repositoryagreementid = PrimaryKeyField(db_column='RepositoryAgreementID')
+    repositoryagreementnumber = CharField(
+        db_column='RepositoryAgreementNumber', index=True)
+    startdate = DateField(db_column='StartDate', index=True, null=True)
+    status = CharField(db_column='Status', null=True)
+    text1 = CharField(db_column='Text1', null=True)
+    text2 = CharField(db_column='Text2', null=True)
+    text3 = CharField(db_column='Text3', null=True)
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    version = IntegerField(db_column='Version', null=True)
+    yesno1 = BitField(db_column='YesNo1', null=True)  # bit
+    yesno2 = BitField(db_column='YesNo2', null=True)  # bit
+
+    class Meta:
+        db_table = 'repositoryagreement'
+
+
+class Accession(BaseModel):
+    accessioncondition = CharField(db_column='AccessionCondition', null=True)
+    accessionid = PrimaryKeyField(db_column='AccessionID')
+    accessionnumber = CharField(db_column='AccessionNumber', index=True)
+    addressofrecordid = ForeignKeyField(
+        db_column='AddressOfRecordID', null=True, rel_model=Addressofrecord,
+        to_field='addressofrecordid')
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        to_field='agentid')
+    dateaccessioned = DateField(
+        db_column='DateAccessioned', index=True, null=True)
+    dateacknowledged = DateField(db_column='DateAcknowledged', null=True)
+    datereceived = DateField(db_column='DateReceived', null=True)
+    divisionid = ForeignKeyField(
+        db_column='DivisionID', rel_model=Division,
+        to_field='usergroupscopeid')
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='accession_modifiedbyagentid_set', to_field='agentid')
+    number1 = FloatField(db_column='Number1', null=True)
+    number2 = FloatField(db_column='Number2', null=True)
+    remarks = TextField(db_column='Remarks', null=True)
+    repositoryagreementid = ForeignKeyField(
+        db_column='RepositoryAgreementID', null=True,
+        rel_model=Repositoryagreement, to_field='repositoryagreementid')
+    status = CharField(db_column='Status', null=True)
+    text1 = TextField(db_column='Text1', null=True)
+    text2 = TextField(db_column='Text2', null=True)
+    text3 = TextField(db_column='Text3', null=True)
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    totalvalue = DecimalField(db_column='TotalValue', null=True)
+    type = CharField(db_column='Type', null=True)
+    verbatimdate = CharField(db_column='VerbatimDate', null=True)
+    version = IntegerField(db_column='Version', null=True)
+    yesno1 = BitField(db_column='YesNo1', null=True)  # bit
+    yesno2 = BitField(db_column='YesNo2', null=True)  # bit
+
+    class Meta:
+        db_table = 'accession'
+
+class Accessionagent(BaseModel):
+    accessionagentid = PrimaryKeyField(db_column='AccessionAgentID')
+    accessionid = ForeignKeyField(
+        db_column='AccessionID', null=True, rel_model=Accession,
+        to_field='accessionid')
+    agentid = ForeignKeyField(
+        db_column='AgentID', rel_model=Agent, to_field='agentid')
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        related_name='accessionagent_createdbyagentid_set',
+        to_field='agentid')
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='accessionagent_modifiedbyagentid_set',
+        to_field='agentid')
+    remarks = TextField(db_column='Remarks', null=True)
+    repositoryagreementid = ForeignKeyField(
+        db_column='RepositoryAgreementID', null=True,
+        rel_model=Repositoryagreement, to_field='repositoryagreementid')
+    role = CharField(db_column='Role')
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    version = IntegerField(db_column='Version', null=True)
+
+    class Meta:
+        db_table = 'accessionagent'
+
+
 class Collection(BaseModel):
     collectionname = CharField(
         db_column='CollectionName', index=True, null=True)

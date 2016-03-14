@@ -3,6 +3,25 @@
 Tracking changes in CollectionBatchTool between versions. 
 See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
+
+## 0.1.4 ##
+
+This release contains a number of small fixes and enhancements.
+
+
+### New features ###
+
+* Added support for the following tables: accession, addressofrecord and repositoryagreement
+* Added separate function for initiating the database (the configuration file is no longer required)
+* Added separate function for applying the Specify context (collection and user)
+* Adapted script "export_all_data.py" in docs for calls from the command line
+
+Released 2016-03-14
+
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.3...v0.1.4)
+
+
+
 ## 0.1.3 ##
 
 This release was created only to get things working correctly on PyPI.
@@ -10,9 +29,12 @@ There should be no substantial changes from the previous release.
 
 [View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.2...v0.1.3)
 
+
+
 ## 0.1.2 ##
 
 This release contains a number of small fixes and enhancements.
+
 
 ### New features ###
 
@@ -25,9 +47,21 @@ Released 2016-01-04
 [View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.1...v0.1.2)
 
 
+
+## 0.1.2 ##
+
+This release contains a number of small fixes and enhancements.
+
+Released 2015-12-18
+
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.1...v0.1.2)
+
+
+
 ## 0.1.1 ##
 
 This release contains a number of small fixes and enhancements.
+
 
 ### New features ###
 
@@ -39,6 +73,7 @@ This release contains a number of small fixes and enhancements.
 Released 2015-09-13
 
 [View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.0...v0.1.1)
+
 
 
 ## 0.1.0 ##

@@ -17,7 +17,7 @@ from numpy import nan
 
 __authors__ = "Markus Englund"
 __license__ = "MIT"
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 
 # For Python 2 and 3 compatibility
@@ -245,6 +245,37 @@ def _validate_column_names(columns, valid_columns):
         raise KeyError(
             'Could not set "frame" due to invalid column name(s).')
 
+def apply_specify_context(collection_name, specify_user, quiet=True):
+    """
+    Set up the Specify context.
+    
+    Parameters
+    ----------
+    collection_name : str
+        Name of an existing Specify collection.
+    specify_user : str
+        Username for an existing Specify user.
+    quiet : bool, default True
+        If True, no output will be written to standard output.
+
+    """
+    if not quiet:
+        print(_bold('applying Specify context: '))
+    database = specifymodels.database
+    collection_context = _get_collection_context(
+        database=database, collection_name=collection_name)
+    user_agentid = _get_user_agentid(
+        database=database, divisionid=collection_context['divisionid'],
+        specify_username=specify_user)
+    specify_context = {'database': database, 'user_agentid': user_agentid}
+    specify_context.update(collection_context)
+    TableDataset.specify_context = specify_context
+    if not quiet:
+        print(
+            '    collection:    {0}\n'
+            '    Specify user:  {1}'
+            .format(repr(collection_name), repr(specify_user)))
+
 
 def apply_user_settings(filepath, quiet=True):
     """
@@ -257,9 +288,9 @@ def apply_user_settings(filepath, quiet=True):
     quiet : bool, default True
         If True, no output will be written to standard output.
     """
-    database = specifymodels.database
+    # database = specifymodels.database
     if not quiet:
-        print(_bold('applying user settings: '), end='')
+        print(_bold('reading config-file: '), end='')
     if not os.path.isfile(filepath):
         raise OSError('Invalid configuration file... ' + filepath)
     else:
@@ -271,29 +302,40 @@ def apply_user_settings(filepath, quiet=True):
         db_user = config_parser.get('MySQL', 'User')
         db_password = config_parser.get('MySQL', 'Password')
         collection = config_parser.get('Specify', 'CollectionName')
-        specify_username = config_parser.get('Specify', 'User')
-        # Initiate database
-        database.init(
-            database=db_name, host=db_host, user=db_user, passwd=db_password)
-        collection_context = _get_collection_context(
-            database=database, collection_name=collection)
-        user_agentid = _get_user_agentid(
-            database=database, divisionid=collection_context['divisionid'],
-            specify_username=specify_username)
-        specify_context = {'database': database, 'user_agentid': user_agentid}
-        specify_context.update(collection_context)
-        # Apply user settings
-        TableDataset.specify_context = specify_context
+        specify_username = config_parser.get('Specify', 'User')  
         if not quiet:
-            print(
-                '{0}\n'
-                '    database name: {1}\n'
-                '    database host: {2}\n'
-                '    collection:    {3}\n'
-                '    Specify user:  {4}'
-                .format(
-                    os.path.abspath(filepath), repr(db_name), repr(db_host),
-                    repr(collection), repr(specify_username)))
+            print(os.path.abspath(filepath))
+        initiate_database(db_name, db_host, db_user, db_password, quiet=quiet)
+        database = specifymodels.database
+        apply_specify_context(collection, specify_username, quiet=quiet)
+
+
+def initiate_database(database, host, user, passwd, quiet=True):
+    """
+    Initiate the database.
+    
+    Parameters
+    ----------
+    database : str
+        Name of a MySQL database.
+    host : str
+        Database host.
+    user : str
+        MySQL user name.
+    passwd : str
+        MySQL password.
+    quiet : bool, default True
+        If True, no output will be written to standard output.
+    """
+    if not quiet:
+        print(_bold('initiates database: '))
+    specifymodels.database.init(
+        database=database, host=host, user=user, passwd=passwd)
+    if not quiet:
+        print(
+            '    database name: {0}\n'
+            '    database host: {1}'
+            .format(repr(database), repr(host)))
 
 
 def query_to_dataframe(database, query):
@@ -990,6 +1032,68 @@ class AgentDataset(TableDataset):
         frame = pandas.DataFrame()
         super(AgentDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
+
+
+class AddressofrecordDataset(TableDataset):
+    """Dataset corresponding to the addressofrecord-table."""
+    def __init__(self):
+        model = specifymodels.Addressofrecord
+        key_columns = {
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {}
+        where_clause = None
+        frame = pandas.DataFrame()
+        super(AddressofrecordDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class RepositoryagreementDataset(TableDataset):
+    """Dataset corresponding to the repositoryagreement-table."""
+    def __init__(self):
+        model = specifymodels.Repositoryagreement
+        key_columns = {
+            'repositoryagreementid': 'repositoryagreement_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'agentid': 'agent_sourceid'
+        }
+        static_content = {
+            'divisionid': self.specify_context['divisionid']
+        }
+        where_clause = (
+            specifymodels.Repositoryagreement.divisionid == 
+            self.specify_context['divisionid']
+        )
+        frame = pandas.DataFrame()
+        super(RepositoryagreementDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class AccessionDataset(TableDataset):
+    """Dataset corresponding to the accession-table."""
+    def __init__(self):
+        model = specifymodels.Accession
+        key_columns = {
+            'accessionid': 'accession_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'repositoryagreementid': 'repositoryagreement_sourceid'    
+        }
+        static_content = {
+            'divisionid': self.specify_context['divisionid']
+        }
+        where_clause = (
+            specifymodels.Accession.divisionid == 
+            self.specify_context['divisionid']
+        )
+        frame = pandas.DataFrame()
+        super(AccessionDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame) 
 
 
 class GeographytreedefitemDataset(TableDataset):

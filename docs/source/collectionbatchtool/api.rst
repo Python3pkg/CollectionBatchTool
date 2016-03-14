@@ -19,10 +19,13 @@ following sections are included:
 Module-level functions
 ----------------------
 
+.. autofunction:: collectionbatchtool.apply_specify_context
+
 .. autofunction:: collectionbatchtool.apply_user_settings
 
-.. autofunction:: collectionbatchtool.query_to_dataframe
+.. autofunction:: collectionbatchtool.initiate_database
 
+.. autofunction:: collectionbatchtool.query_to_dataframe
 
 .. _tabledataset-class:
 
