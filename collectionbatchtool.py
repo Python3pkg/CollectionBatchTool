@@ -246,6 +246,19 @@ def _validate_column_names(columns, valid_columns):
             'Could not set "frame" due to invalid column name(s).')
 
 def apply_specify_context(collection_name, specify_user, quiet=True):
+    """
+    Set up the Specify context.
+    
+    Parameters
+    ----------
+    collection_name : str
+        Name of an existing Specify collection.
+    specify_user : str
+        Username for an existing Specify user.
+    quiet : bool, default True
+        If True, no output will be written to standard output.
+
+    """
     if not quiet:
         print(_bold('applying Specify context: '))
     database = specifymodels.database
@@ -298,7 +311,22 @@ def apply_user_settings(filepath, quiet=True):
 
 
 def initiate_database(database, host, user, passwd, quiet=True):
-    """Initiate the database."""
+    """
+    Initiate the database.
+    
+    Parameters
+    ----------
+    database : str
+        Name of a MySQL database.
+    host : str
+        Database host.
+    user : str
+        MySQL user name.
+    passwd : str
+        MySQL password.
+    quiet : bool, default True
+        If True, no output will be written to standard output.
+    """
     if not quiet:
         print(_bold('initiates database: '))
     specifymodels.database.init(
