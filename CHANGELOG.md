@@ -14,6 +14,7 @@ This release contains a number of small fixes and enhancements.
 * Added support for the following tables: accession, addressofrecord and repositoryagreement
 * Added separate function for initiating the database (the configuration file is no longer required)
 * Added separate function for applying the Specify context (collection and user)
+* Adapted script "export_all_data.py" in docs for calls from the command line
 
 Released 2016-03-14
 
