@@ -992,6 +992,68 @@ class AgentDataset(TableDataset):
             model, key_columns, static_content, where_clause, frame)
 
 
+class AddressofrecordDataset(TableDataset):
+    """Dataset corresponding to the addressofrecord-table."""
+    def __init__(self):
+        model = specifymodels.Addressofrecord
+        key_columns = {
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {}
+        where_clause = None
+        frame = pandas.DataFrame()
+        super(AddressofrecordDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class RepositoryagreementDataset(TableDataset):
+    """Dataset corresponding to the repositoryagreement-table."""
+    def __init__(self):
+        model = specifymodels.Repositoryagreement
+        key_columns = {
+            'repositoryagreementid': 'repositoryagreement_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'agentid': 'agent_sourceid'
+        }
+        static_content = {
+            'divisionid': self.specify_context['divisionid']
+        }
+        where_clause = (
+            specifymodels.Repositoryagreement.divisionid == 
+            self.specify_context['divisionid']
+        )
+        frame = pandas.DataFrame()
+        super(RepositoryagreementDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class AccessionDataset(TableDataset):
+    """Dataset corresponding to the accession-table."""
+    def __init__(self):
+        model = specifymodels.Accession
+        key_columns = {
+            'accessionid': 'accession_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid',
+            'addressofrecordid': 'addressofrecord_sourceid',
+            'repositoryagreementid': 'repositoryagreement_sourceid'    
+        }
+        static_content = {
+            'divisionid': self.specify_context['divisionid']
+        }
+        where_clause = (
+            specifymodels.Accession.divisionid == 
+            self.specify_context['divisionid']
+        )
+        frame = pandas.DataFrame()
+        super(AccessionDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame) 
+
+
 class GeographytreedefitemDataset(TableDataset):
     """Dataset corresponding to the geographytreedefitem-table."""
     def __init__(self):
