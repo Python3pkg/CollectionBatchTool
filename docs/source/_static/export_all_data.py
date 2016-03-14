@@ -8,9 +8,11 @@ import argparse
 from collectionbatchtool import *
 
 
-def export_all_data(config_file, output_dir=None, quiet=True):
+def export_all_data(
+        config_file, output_dir=None,
+        drop_empty_columns=False, quiet=True):
     """
-    Export table data to CSV files.
+    Export data from Specify to CSV files.
 
     Parameters
     ----------
@@ -26,17 +28,24 @@ def export_all_data(config_file, output_dir=None, quiet=True):
             filename = instance.model.__name__.lower() + '.csv'
             filepath = os.path.join(output_dir, filename)
             instance.to_csv(
-                filepath, update_sourceid=True, quiet=quiet)
+                filepath,
+                update_sourceid=True,
+                drop_empty_columns=drop_empty_columns,
+                quiet=quiet)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='A command-line script that exports Specify data.')
+        description='A command-line script to export Specify data.')
     parser.add_argument(
         'config_file', type=argparse.FileType('rU'),
         help='path to a config-file')
-    parser.add_argument('output_dir', default='.', nargs='?',
+    parser.add_argument(
+        'output_dir', default='.', nargs='?',
         help='path to output directory')
+    parser.add_argument(
+        '-d', '--drop-empty-columns', dest='drop_empty_columns',
+        action='store_true', help='drop columns without data')
     parser.add_argument(
         '-v', '--verbose', action='store_true')
     args = parser.parse_args()
@@ -45,7 +54,10 @@ if __name__ == '__main__':
         msg = "%d is not valid directory" % args.output_dir
         raise argparse.ArgumentTypeError(msg)
     
-    quiet=False if args.verbose else False
+    quiet = False if args.verbose else True
  
     export_all_data(
-        args.config_file.name, output_dir=args.output_dir, quiet=False)
+        args.config_file.name,
+        output_dir=args.output_dir,
+        drop_empty_columns=args.drop_empty_columns,
+        quiet=quiet)
