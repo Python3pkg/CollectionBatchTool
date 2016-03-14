@@ -63,7 +63,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CollectionBatchTool'
-copyright = '2015, Markus Englund'
+copyright = '2016, Markus Englund'
 author = 'Markus Englund'
 
 # The version info for the project you're documenting, acts as replacement for
