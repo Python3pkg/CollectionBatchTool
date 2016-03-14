@@ -11,9 +11,9 @@ implemented. Only tables with a corresponding TableDataset subclass are
 available for batch operations (i.e. data import and export).
 
 
-========================= ================================ ========
-Specify Table             TableDataset subclass            Version
-========================= ================================ ========
+========================= ================================ ==============
+Specify table             TableDataset subclass            Version added
+========================= ================================ ==============
 accession                 AccessionDataset                 0.1.4
 addressofrecord           AddressofrecordDataset           0.1.4
 agent                     AgentDataset
@@ -40,4 +40,4 @@ storagetreedefitem        StoragetreedefitemDataset
 taxon                     TaxonDataset
 taxontreedef              ---
 taxontreedefitem          TaxontreedefitemDataset
-========================= ================================ ========
+========================= ================================ ==============

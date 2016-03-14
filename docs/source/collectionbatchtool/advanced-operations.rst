@@ -51,10 +51,6 @@ simple script:
 
 :download:`export_all_data.py <../_static/export_all_data.py>`
 
-The script above will export all the available columns, regardless of whether 
-they contain data or not. To export just the columns that contain data, 
-set ``drop_empty_columns=True`` in the :meth:`~TableDataset.to_csv` method.
-
 
 .. _importing-to-multiple-tables:
 
