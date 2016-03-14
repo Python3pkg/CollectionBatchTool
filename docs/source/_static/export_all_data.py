@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-"""export_all_data.py - script for exporting all available data"""
+"""
+export_all_data.py - script for exporting available data.
+"""
 
 import os
 import argparse
