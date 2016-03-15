@@ -43,7 +43,7 @@ geography-tables.
 
 
 To export all the data available to CollectionBatchTool, we can write a 
-simple script:
+simple command-line script:
 
 
 .. literalinclude:: ../_static/export_all_data.py

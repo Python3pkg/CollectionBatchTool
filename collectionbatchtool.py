@@ -17,7 +17,7 @@ from numpy import nan
 
 __authors__ = "Markus Englund"
 __license__ = "MIT"
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 
 # For Python 2 and 3 compatibility
@@ -618,7 +618,7 @@ class TableDataset(object):
 
     def match_database_records(self, match_columns, quiet=True):
         """
-        Update primary key values for matching records in database.
+        Update primary key values for records that match database.
 
         Parameters
         ----------
@@ -643,7 +643,7 @@ class TableDataset(object):
             self.frame.dropna(subset=match_columns)
             .duplicated(subset=match_columns).any()
         ):
-            raise KeyError(
+            warnings.warn(
                 'Match-column(s) in frame contains non-unique values.')
         if db_frame.duplicated(subset=match_columns).any():
             warnings.warn(
