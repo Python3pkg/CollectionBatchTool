@@ -8,6 +8,7 @@ See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
 This release fixes one bug in the method `match_database_records`. Matching duplicate values against values in a database table will no longer result in an error being raised. A warning will be issued instead.
 
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.4...v0.1.5)
 
 
 ## 0.1.4 ##
