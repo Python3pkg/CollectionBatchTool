@@ -643,7 +643,7 @@ class TableDataset(object):
             self.frame.dropna(subset=match_columns)
             .duplicated(subset=match_columns).any()
         ):
-            raise KeyError(
+            warnings.warn(
                 'Match-column(s) in frame contains non-unique values.')
         if db_frame.duplicated(subset=match_columns).any():
             warnings.warn(
