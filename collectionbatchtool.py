@@ -618,7 +618,7 @@ class TableDataset(object):
 
     def match_database_records(self, match_columns, quiet=True):
         """
-        Update primary key values for matching records in database.
+        Update primary key values for records that match database.
 
         Parameters
         ----------
