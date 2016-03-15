@@ -4,6 +4,12 @@ Tracking changes in CollectionBatchTool between versions.
 See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
 
+## 0.1.5 ##
+
+This release fixes one bug in the method `match_database_records`. Matching duplicate values against values in a database table will no longer result in an error being raised. A warning will be issued instead.
+
+
+
 ## 0.1.4 ##
 
 This release contains a number of small fixes and enhancements.
@@ -43,16 +49,6 @@ This release contains a number of small fixes and enhancements.
 * Small documentation updates in a few places
 
 Released 2016-01-04
-
-[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.1...v0.1.2)
-
-
-
-## 0.1.2 ##
-
-This release contains a number of small fixes and enhancements.
-
-Released 2015-12-18
 
 [View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.1...v0.1.2)
 
