@@ -245,10 +245,11 @@ def _validate_column_names(columns, valid_columns):
         raise KeyError(
             'Could not set "frame" due to invalid column name(s).')
 
+
 def apply_specify_context(collection_name, specify_user, quiet=True):
     """
     Set up the Specify context.
-    
+
     Parameters
     ----------
     collection_name : str
@@ -302,7 +303,7 @@ def apply_user_settings(filepath, quiet=True):
         db_user = config_parser.get('MySQL', 'User')
         db_password = config_parser.get('MySQL', 'Password')
         collection = config_parser.get('Specify', 'CollectionName')
-        specify_username = config_parser.get('Specify', 'User')  
+        specify_username = config_parser.get('Specify', 'User')
         if not quiet:
             print(os.path.abspath(filepath))
         initiate_database(db_name, db_host, db_user, db_password, quiet=quiet)
@@ -313,7 +314,7 @@ def apply_user_settings(filepath, quiet=True):
 def initiate_database(database, host, user, passwd, quiet=True):
     """
     Initiate the database.
-    
+
     Parameters
     ----------
     database : str
@@ -1070,7 +1071,7 @@ class RepositoryagreementDataset(TableDataset):
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            specifymodels.Repositoryagreement.divisionid == 
+            specifymodels.Repositoryagreement.divisionid ==
             self.specify_context['divisionid']
         )
         frame = pandas.DataFrame()
@@ -1087,18 +1088,18 @@ class AccessionDataset(TableDataset):
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
             'addressofrecordid': 'addressofrecord_sourceid',
-            'repositoryagreementid': 'repositoryagreement_sourceid'    
+            'repositoryagreementid': 'repositoryagreement_sourceid'
         }
         static_content = {
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            specifymodels.Accession.divisionid == 
+            specifymodels.Accession.divisionid ==
             self.specify_context['divisionid']
         )
         frame = pandas.DataFrame()
         super(AccessionDataset, self).__init__(
-            model, key_columns, static_content, where_clause, frame) 
+            model, key_columns, static_content, where_clause, frame)
 
 
 class GeographytreedefitemDataset(TableDataset):
@@ -1229,10 +1230,13 @@ class CollectorDataset(TableDataset):
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            (specifymodels.Collector.divisionid ==
-            self.specify_context['divisionid']) & (
-            specifymodels.Collectingevent.disciplineid ==
-            self.specify_context['disciplineid']))
+            (
+                specifymodels.Collector.divisionid ==
+                self.specify_context['divisionid']
+            ) & (
+                specifymodels.Collectingevent.disciplineid ==
+                self.specify_context['disciplineid'])
+            )
         frame = pandas.DataFrame()
         super(CollectorDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)

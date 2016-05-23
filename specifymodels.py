@@ -252,6 +252,7 @@ class Accession(BaseModel):
     class Meta:
         db_table = 'accession'
 
+
 class Accessionagent(BaseModel):
     accessionagentid = PrimaryKeyField(db_column='AccessionAgentID')
     accessionid = ForeignKeyField(
@@ -1092,7 +1093,7 @@ class Picklistitem(BaseModel):
     ordinal = IntegerField(
         db_column='Ordinal', null=True)
     picklistid = ForeignKeyField(
-        db_column='PickListID', rel_model=Picklist,to_field='picklistid')
+        db_column='PickListID', rel_model=Picklist, to_field='picklistid')
     picklistitemid = PrimaryKeyField(db_column='PickListItemID')
     timestampcreated = DateTimeField(db_column='TimestampCreated')
     timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
