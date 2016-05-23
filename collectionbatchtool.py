@@ -821,7 +821,7 @@ class TableDataset(object):
             if 'version' not in columns:
                 columns.append('version')
             drop_columns.extend(timestamp_columns)
-            frame.version = frame.version.fillna(0) + 1
+            frame.version = frame.version.fillna(0).astype('int') + 1
         frame = (
             frame[[self.primary_key_column] + columns]
             .dropna(subset=[self.primary_key_column]))
