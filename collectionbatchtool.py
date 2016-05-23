@@ -426,6 +426,11 @@ class TableDataset(object):
                 self.model.select()
                 .join(specifymodels.Collectingevent)
                 .where(self.where_clause))
+        elif isinstance(self, PicklistitemDataset):
+            q = (
+                self.model.select()
+                .join(specifymodels.Picklist)
+                .where(self.where_clause))
         else:
             q = self.model.select().where(self.where_clause)
         return q
@@ -1440,4 +1445,45 @@ class DeterminationDataset(TableDataset):
         )
         frame = pandas.DataFrame()
         super(DeterminationDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class PicklistDataset(TableDataset):
+    """Dataset corresponding to the picklist-table."""
+    def __init__(self):
+        model = specifymodels.Picklist
+        key_columns = {
+            'picklistid': 'picklist_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {
+            'collectionid': self.specify_context['collectionid']
+        }
+        where_clause = (
+            specifymodels.Picklist.collectionid ==
+            self.specify_context['collectionid']
+        )
+        frame = pandas.DataFrame()
+        super(PicklistDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class PicklistitemDataset(TableDataset):
+    """Dataset corresponding to the picklistitem-table."""
+    def __init__(self):
+        model = specifymodels.Picklistitem
+        key_columns = {
+            'picklistitemid': 'picklistitem_sourceid',
+            'picklistid': 'picklist_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {}
+        where_clause = (
+            specifymodels.Picklist.collectionid ==
+            self.specify_context['collectionid']
+        )
+        frame = pandas.DataFrame()
+        super(PicklistitemDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
