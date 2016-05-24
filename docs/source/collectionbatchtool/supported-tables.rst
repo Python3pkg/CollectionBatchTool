@@ -30,9 +30,11 @@ geography                 GeographyDataset
 geographytreedef          ---
 geographytreedefitem      GeographytreedefitemDataset
 locality                  LocalityDataset
+picklist                  PicklistDataset                  0.1.6
+picklistitem              PicklistitemDataset              0.1.6
 preptype                  PreptypeDataset
 preparation               PreparationDataset
-repositoryagreement       RepositoryagreementDataset        0.1.4
+repositoryagreement       RepositoryagreementDataset       0.1.4
 specifyuser               ---
 storage                   StorageDataset
 storagetreedef            ---
