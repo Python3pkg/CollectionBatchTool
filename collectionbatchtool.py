@@ -17,7 +17,7 @@ from numpy import nan
 
 __authors__ = "Markus Englund"
 __license__ = "MIT"
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 
 # For Python 2 and 3 compatibility
@@ -245,10 +245,11 @@ def _validate_column_names(columns, valid_columns):
         raise KeyError(
             'Could not set "frame" due to invalid column name(s).')
 
+
 def apply_specify_context(collection_name, specify_user, quiet=True):
     """
     Set up the Specify context.
-    
+
     Parameters
     ----------
     collection_name : str
@@ -302,7 +303,7 @@ def apply_user_settings(filepath, quiet=True):
         db_user = config_parser.get('MySQL', 'User')
         db_password = config_parser.get('MySQL', 'Password')
         collection = config_parser.get('Specify', 'CollectionName')
-        specify_username = config_parser.get('Specify', 'User')  
+        specify_username = config_parser.get('Specify', 'User')
         if not quiet:
             print(os.path.abspath(filepath))
         initiate_database(db_name, db_host, db_user, db_password, quiet=quiet)
@@ -313,7 +314,7 @@ def apply_user_settings(filepath, quiet=True):
 def initiate_database(database, host, user, passwd, quiet=True):
     """
     Initiate the database.
-    
+
     Parameters
     ----------
     database : str
@@ -425,6 +426,11 @@ class TableDataset(object):
             q = (
                 self.model.select()
                 .join(specifymodels.Collectingevent)
+                .where(self.where_clause))
+        elif isinstance(self, PicklistitemDataset):
+            q = (
+                self.model.select()
+                .join(specifymodels.Picklist)
                 .where(self.where_clause))
         else:
             q = self.model.select().where(self.where_clause)
@@ -821,7 +827,7 @@ class TableDataset(object):
             if 'version' not in columns:
                 columns.append('version')
             drop_columns.extend(timestamp_columns)
-            frame.version = frame.version.fillna(0) + 1
+            frame.version = frame.version.fillna(0).astype('int') + 1
         frame = (
             frame[[self.primary_key_column] + columns]
             .dropna(subset=[self.primary_key_column]))
@@ -1065,7 +1071,7 @@ class RepositoryagreementDataset(TableDataset):
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            specifymodels.Repositoryagreement.divisionid == 
+            specifymodels.Repositoryagreement.divisionid ==
             self.specify_context['divisionid']
         )
         frame = pandas.DataFrame()
@@ -1082,18 +1088,18 @@ class AccessionDataset(TableDataset):
             'createdbyagentid': 'createdbyagent_sourceid',
             'modifiedbyagentid': 'modifiedbyagent_sourceid',
             'addressofrecordid': 'addressofrecord_sourceid',
-            'repositoryagreementid': 'repositoryagreement_sourceid'    
+            'repositoryagreementid': 'repositoryagreement_sourceid'
         }
         static_content = {
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            specifymodels.Accession.divisionid == 
+            specifymodels.Accession.divisionid ==
             self.specify_context['divisionid']
         )
         frame = pandas.DataFrame()
         super(AccessionDataset, self).__init__(
-            model, key_columns, static_content, where_clause, frame) 
+            model, key_columns, static_content, where_clause, frame)
 
 
 class GeographytreedefitemDataset(TableDataset):
@@ -1224,10 +1230,13 @@ class CollectorDataset(TableDataset):
             'divisionid': self.specify_context['divisionid']
         }
         where_clause = (
-            (specifymodels.Collector.divisionid ==
-            self.specify_context['divisionid']) & (
-            specifymodels.Collectingevent.disciplineid ==
-            self.specify_context['disciplineid']))
+            (
+                specifymodels.Collector.divisionid ==
+                self.specify_context['divisionid']
+            ) & (
+                specifymodels.Collectingevent.disciplineid ==
+                self.specify_context['disciplineid'])
+            )
         frame = pandas.DataFrame()
         super(CollectorDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)
@@ -1440,4 +1449,45 @@ class DeterminationDataset(TableDataset):
         )
         frame = pandas.DataFrame()
         super(DeterminationDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class PicklistDataset(TableDataset):
+    """Dataset corresponding to the picklist-table."""
+    def __init__(self):
+        model = specifymodels.Picklist
+        key_columns = {
+            'picklistid': 'picklist_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {
+            'collectionid': self.specify_context['collectionid']
+        }
+        where_clause = (
+            specifymodels.Picklist.collectionid ==
+            self.specify_context['collectionid']
+        )
+        frame = pandas.DataFrame()
+        super(PicklistDataset, self).__init__(
+            model, key_columns, static_content, where_clause, frame)
+
+
+class PicklistitemDataset(TableDataset):
+    """Dataset corresponding to the picklistitem-table."""
+    def __init__(self):
+        model = specifymodels.Picklistitem
+        key_columns = {
+            'picklistitemid': 'picklistitem_sourceid',
+            'picklistid': 'picklist_sourceid',
+            'createdbyagentid': 'createdbyagent_sourceid',
+            'modifiedbyagentid': 'modifiedbyagent_sourceid'
+        }
+        static_content = {}
+        where_clause = (
+            specifymodels.Picklist.collectionid ==
+            self.specify_context['collectionid']
+        )
+        frame = pandas.DataFrame()
+        super(PicklistitemDataset, self).__init__(
             model, key_columns, static_content, where_clause, frame)

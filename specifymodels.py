@@ -252,6 +252,7 @@ class Accession(BaseModel):
     class Meta:
         db_table = 'accession'
 
+
 class Accessionagent(BaseModel):
     accessionagentid = PrimaryKeyField(db_column='AccessionAgentID')
     accessionid = ForeignKeyField(
@@ -1009,7 +1010,7 @@ class Determination(BaseModel):
     confidence = CharField(db_column='Confidence', null=True)
     createdbyagentid = ForeignKeyField(
         db_column='CreatedByAgentID', null=True, rel_model=Agent,
-        to_field='agentid')
+        related_name='determination_createdbyagentid_set', to_field='agentid')
     determinationid = PrimaryKeyField(db_column='DeterminationID')
     determineddate = DateField(
         db_column='DeterminedDate', index=True, null=True)
@@ -1050,6 +1051,58 @@ class Determination(BaseModel):
 
     class Meta:
         db_table = 'determination'
+
+
+class Picklist(BaseModel):
+    collectionid = ForeignKeyField(
+        db_column='CollectionID', rel_model=Collection,
+        to_field='usergroupscopeid')
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        related_name='picklist_createdbyagentid_set', to_field='agentid')
+    fieldname = CharField(db_column='FieldName', null=True)
+    filterfieldname = CharField(db_column='FilterFieldName', null=True)
+    filtervalue = CharField(db_column='FilterValue', null=True)
+    formatter = CharField(db_column='Formatter', null=True)
+    issystem = BitField(db_column='IsSystem')  # bit
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='picklist_modifiedbyagentid_set', to_field='agentid')
+    name = CharField(db_column='Name', index=True)
+    picklistid = PrimaryKeyField(db_column='PickListID')
+    readonly = BitField(db_column='ReadOnly')  # bit
+    sizelimit = IntegerField(db_column='SizeLimit', null=True)
+    sorttype = IntegerField(db_column='SortType', null=True)
+    tablename = CharField(db_column='TableName', null=True)
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    type = IntegerField(db_column='Type')
+    version = IntegerField(db_column='Version', null=True)
+
+    class Meta:
+        db_table = 'picklist'
+
+
+class Picklistitem(BaseModel):
+    createdbyagentid = ForeignKeyField(
+        db_column='CreatedByAgentID', null=True, rel_model=Agent,
+        related_name='picklistitem_createdbyagentid_set', to_field='agentid')
+    modifiedbyagentid = ForeignKeyField(
+        db_column='ModifiedByAgentID', null=True, rel_model=Agent,
+        related_name='picklistitem_modifiedbyagentid_set', to_field='agentid')
+    ordinal = IntegerField(
+        db_column='Ordinal', null=True)
+    picklistid = ForeignKeyField(
+        db_column='PickListID', rel_model=Picklist, to_field='picklistid')
+    picklistitemid = PrimaryKeyField(db_column='PickListItemID')
+    timestampcreated = DateTimeField(db_column='TimestampCreated')
+    timestampmodified = DateTimeField(db_column='TimestampModified', null=True)
+    title = CharField(db_column='Title')
+    value = CharField(db_column='Value', null=True)
+    version = IntegerField(db_column='Version', null=True)
+
+    class Meta:
+        db_table = 'picklistitem'
 
 
 DivisionProxy.initialize(Division)

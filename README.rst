@@ -7,16 +7,16 @@ The intended audience is advanced users such as data managers, migration
 specialists, and system administrators.
 
 * Built on top of the packages
-  `peewee <https://peewee.readthedocs.org>`_ and 
+  `peewee <https://peewee.readthedocs.io>`_ and 
   `pandas <http://pandas.pydata.org>`_
 * Fast uploading of large datasets
-* Requires no prior knowledge in SQL and little knowledge in Python
+* Requires no prior knowledge in SQL and little knowledge of Python
 
 Currently only with support for Python 3.
 
 Source repository: `<https://github.com/jmenglund/CollectionBatchTool>`_
 
-Documentation at `<http://collectionbatchtool.readthedocs.org>`_
+Documentation at `<http://collectionbatchtool.readthedocs.io>`_
 
 .. image:: https://badge.fury.io/py/CollectionBatchTool.svg
     :target: http://badge.fury.io/py/CollectionBatchTool
