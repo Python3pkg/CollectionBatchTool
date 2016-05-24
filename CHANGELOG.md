@@ -3,6 +3,15 @@
 Tracking changes in CollectionBatchTool between versions. 
 See also https://github.com/jmenglund/CollectionBatchTool/releases.
 
+## 0.1.6 ##
+
+* Fixes data type issue in the method `update_database_records`.
+* Added support for uploading pick lists (tables picklist and picklistitem)
+
+[View commits](https://github.com/jmenglund/CollectionBatchTool/compare/v0.1.5...v0.1.6)
+
+Released 2016-05-24
+
 
 ## 0.1.5 ##
 
