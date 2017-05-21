@@ -3,8 +3,8 @@
 
 """collectionbatchtool module"""
 
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
 import datetime
 import os
 import sys
@@ -22,16 +22,16 @@ __version__ = '0.1.6'
 
 # For Python 2 and 3 compatibility
 try:
-    basestring
+    str
 except NameError:
-    basestring = str
+    str = str
 
 warnings.simplefilter('always', UserWarning)
 
 
 def _bold(msg):
     """Make text bold."""
-    return (u'\033[1m{0}\033[0m'.format(msg))
+    return ('\033[1m{0}\033[0m'.format(msg))
 
 
 def _chunker(seq, chunksize):
@@ -207,7 +207,7 @@ def _insert_defaults(frame, defaults):
 def _pretty_dict(d, sort=True):
     """Pretty-formatting for a one-level :class:`<dict>`."""
     dict_string = '{\n'
-    for (key, value) in (sorted(d.items()) if sort else d.iteritems()):
+    for (key, value) in (sorted(d.items()) if sort else iter(d.items())):
         dict_string += '    ' + repr(key) + ': ' + repr(value) + '\n'
     dict_string = dict_string.rstrip('\n') + '}'
     return dict_string
@@ -411,7 +411,7 @@ class TableDataset(object):
     @property
     def foreign_key_columns(self):
         foreign_key_columns = {}
-        for key_column in self.key_columns.keys():
+        for key_column in list(self.key_columns.keys()):
             if not getattr(self.model, key_column).primary_key:
                 rel_model = getattr(self.model, key_column).rel_model
                 foreign_key_columns[rel_model] = (
@@ -594,7 +594,7 @@ class TableDataset(object):
         tuple
             matches, possible matches
         """
-        if isinstance(match_columns, basestring):
+        if isinstance(match_columns, str):
             match_columns = [match_columns]
         possible_matches = len(self.frame.dropna(
             how='all', subset=match_columns))
@@ -639,7 +639,7 @@ class TableDataset(object):
                 .format(self.__class__.__name__))
             sys.stdout.flush()
         database = self.specify_context['database']
-        if isinstance(match_columns, basestring):
+        if isinstance(match_columns, str):
             match_columns = [match_columns]
         db_frame = pandas.DataFrame(
             query_to_dataframe(database, self.database_query),
@@ -779,7 +779,7 @@ class TableDataset(object):
             frame_to_upload = frame_to_upload.drop(
                 labels=[self.primary_key_column], axis=1)
             frame_to_upload[self.primary_key_column] = pandas.Series(
-                range(first_id, first_id + len(frame_to_upload)),
+                list(range(first_id, first_id + len(frame_to_upload))),
                 index=frame_to_upload.index)
             self.frame = frame_uploaded.append(
                 frame_to_upload, ignore_index=True)
@@ -807,7 +807,7 @@ class TableDataset(object):
         print_msg = (
             _bold('[{}] updating database records:')
             .format(self.__class__.__name__))
-        if isinstance(columns, basestring):
+        if isinstance(columns, str):
             columns = [columns]
         database = self.specify_context['database']
         timestamp_columns = []
